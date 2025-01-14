@@ -22,7 +22,7 @@ SQL workaround fix for excel bug with missing values
 
     related github
     https://tinyurl.com/mr2b9f3y
-    https://github.com/rogerjdeangelis/utl-dealing-with-missing-values-consitently-within-and-between-multiple-languages-sas-R-and-python
+    https://github.com/rogerjdeangelis/utl-dealing-with-missing-values-consitently-within-and-between-multiple-languages-sas-R-and-pytho
 
     /*                 _   _
       _____  _____ ___| | | |__  _   _  __ _
@@ -130,30 +130,27 @@ SQL workaround fix for excel bug with missing values
     ;;;;
     run;quit;
 
+    /*--- create input excel sheet ---*/
+
+    %utlfkil(d:/xls/wantxl.xlsx);
+
     %utl_rbeginx;
     parmcards4;
     library(openxlsx)
     library(sqldf)
-     wb<-loadWorkbook("d:/xls/wantxl.xlsx")
-     have<-read.xlsx(wb,"have")
-     have
-     addWorksheet(wb, "want")
-     want<-sqldf('
-       select
-          count(distinct(student)) as unq_student
-         ,count(distinct(teacher)) as unq_teacher
-         ,count(distinct(aide))    as unq_aide
-       from
-          have
-      ')
-     print(want)
-     writeData(wb,sheet="want",x=want)
-     saveWorkbook(
-         wb
-        ,"d:/xls/wantxl.xlsx"
-        ,overwrite=TRUE)
+    library(haven)
+    have<-read_sas("d:/sd1/have.sas7bdat")
+    have
+    wb <- createWorkbook()
+    addWorksheet(wb, "have")
+    writeData(wb, sheet = "have", x = have)
+    saveWorkbook(
+        wb
+       ,"d:/xls/wantxl.xlsx"
+       ,overwrite=TRUE)
     ;;;;
     %utl_rendx;
+
 
     /**************************************************************************************************************************/
     /*                                                                                                                        */
@@ -263,3 +260,4 @@ SQL workaround fix for excel bug with missing values
      \___|_| |_|\__,_|
 
     */
+
